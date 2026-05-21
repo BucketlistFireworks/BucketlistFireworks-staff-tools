@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0a">
+<title>Bucketlist Fireworks — 2026 Season</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --text: #f0ede8;
+  --muted: #6b6b6b;
+  --accent: #ff4d1a;
+  --accent2: #ffb347;
+  --green: #2ecc71;
+  --amber: #f39c12;
+  --red: #e74c3c;
+  --blue: #3498db;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+}
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.brand { font-family: var(--font-display); font-size: 28px; letter-spacing: 2px; color: var(--text); line-height: 1; }
+.brand span { color: var(--accent); }
+.season-badge {
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+.header-sub { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+/* NAV TABS */
+.tabs {
+  display: flex;
+  gap: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1;
+  min-width: 80px;
+  padding: 12px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* MAIN */
+.main { padding: 16px 16px; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* METRICS GRID */
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.metric .m-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.metric .m-val { font-family: var(--font-display); font-size: 28px; letter-spacing: 1px; line-height: 1; }
+.metric .m-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.metric.full { grid-column: 1/-1; }
+.metric.accent { border-color: var(--accent); }
+.metric.green .m-val { color: var(--green); }
+.metric.amber .m-val { color: var(--amber); }
+.metric.red .m-val { color: var(--red); }
+
+/* PACE BAR */
+.pace-wrap { margin-top: 8px; }
+.pace-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.pace-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.5s; }
+.pace-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .icon { font-size: 16px; }
+
+/* FORM ELEMENTS */
+.form-group { margin-bottom: 12px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+input, select, textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 10px 12px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.btn-primary { background: var(--accent); color: white; width: 100%; }
+.btn-primary:active { transform: scale(0.98); }
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-row { display: flex; gap: 8px; margin-top: 12px; }
+.btn-row .btn-primary { flex: 2; }
+.btn-row .btn-ghost { flex: 1; }
+
+/* ALERTS */
+.alert {
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 10px;
+  line-height: 1.4;
+}
+.alert-green { background: rgba(46,204,113,0.12); border: 1px solid rgba(46,204,113,0.3); color: #2ecc71; }
+.alert-amber { background: rgba(243,156,18,0.12); border: 1px solid rgba(243,156,18,0.3); color: #f39c12; }
+.alert-red { background: rgba(231,76,60,0.12); border: 1px solid rgba(231,76,60,0.3); color: #e74c3c; }
+.alert-blue { background: rgba(52,152,219,0.12); border: 1px solid rgba(52,152,219,0.3); color: #3498db; }
+
+/* LOG TABLE */
+.log-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -16px; padding: 0 16px; }
+.log-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 520px; }
+.log-table thead th {
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.log-table tbody tr { border-bottom: 1px solid var(--border); }
+.log-table tbody tr:last-child { border-bottom: none; }
+.log-table tbody td { padding: 8px 10px; color: var(--text); white-space: nowrap; }
+.log-table tfoot td { padding: 8px 10px; background: var(--surface2); font-weight: 600; border-top: 1px solid var(--border); }
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+.badge-green { background: rgba(46,204,113,0.2); color: #2ecc71; }
+.badge-amber { background: rgba(243,156,18,0.2); color: #f39c12; }
+.badge-red { background: rgba(231,76,60,0.2); color: #e74c3c; }
+
+/* SEND HOME BOX */
+.send-home-box {
+  background: rgba(243,156,18,0.08);
+  border: 1px solid rgba(243,156,18,0.25);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--amber);
+}
+.send-home-box strong { display: block; font-size: 18px; font-family: var(--font-display); letter-spacing: 1px; margin-bottom: 4px; }
+
+/* PROJ ITEM */
+.proj-date { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.proj-date:last-child { border-bottom: none; }
+.proj-date .pd-date { font-size: 13px; font-weight: 500; }
+.proj-date .pd-day { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.proj-date .pd-amount { font-family: var(--font-display); font-size: 20px; letter-spacing: 1px; }
+.proj-date .pd-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 4px; }
+.proj-date .pd-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+.proj-logged { color: var(--green) !important; }
+
+/* SECTION HEADER */
+.section-divider {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin: 16px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* LIVE TICKER */
+.live-number {
+  font-family: var(--font-display);
+  font-size: 42px;
+  letter-spacing: 2px;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.empty .e-icon { font-size: 32px; margin-bottom: 8px; }
+
+@media (max-width: 380px) {
+  .form-row3 { grid-template-columns: 1fr 1fr; }
+  .brand { font-size: 24px; }
+}
+</style>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#ff4d1a">
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="brand">BUCKET<span>LIST</span></div>
+      <div class="header-sub">Fireworks · Season Tracker</div>
+    </div>
+    <div class="season-badge">2026</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+  <button class="tab" onclick="showTab('log')">Log Day</button>
+  <button class="tab" onclick="showTab('live')">Live Check</button>
+  <button class="tab" onclick="showTab('history')">History</button>
+  <button class="tab" onclick="showTab('schedule')">Schedule</button>
+</div>
+
+<div class="main">
+
+  <!-- DASHBOARD -->
+  <div class="section active" id="tab-dashboard">
+    <div class="metrics">
+      <div class="metric full accent">
+        <div class="m-label">Season sales</div>
+        <div class="live-number" id="d-sales">$0</div>
+        <div class="pace-wrap">
+          <div class="pace-track"><div class="pace-fill" id="d-pace" style="width:0%"></div></div>
+          <div class="pace-label"><span id="d-pace-pct">0% of season</span><span>$317,207 goal</span></div>
+        </div>
+      </div>
+      <div class="metric" id="m-comm">
+        <div class="m-label">Commission</div>
+        <div class="m-val" id="d-comm">$0</div>
+        <div class="m-sub">@ 16.25%</div>
+      </div>
+      <div class="metric" id="m-labor">
+        <div class="m-label">Labor spent</div>
+        <div class="m-val" id="d-labor">$0</div>
+        <div class="m-sub" id="d-labor-sub">of $16,500 budget</div>
+      </div>
+      <div class="metric" id="m-net">
+        <div class="m-label">Take-home</div>
+        <div class="m-val" id="d-net">$0</div>
+        <div class="m-sub">Net after labor</div>
+      </div>
+      <div class="metric" id="m-vs">
+        <div class="m-label">vs Projection</div>
+        <div class="m-val" id="d-vs">—</div>
+        <div class="m-sub" id="d-vs-sub">Based on days logged</div>
+      </div>
+    </div>
+
+    <div class="section-divider">Day by day</div>
+    <div class="card">
+      <div id="proj-list"></div>
+    </div>
+  </div>
+
+  <!-- LOG DAY -->
+  <div class="section" id="tab-log">
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span> Log Today</div>
+
+      <div class="form-group">
+        <label>Date</label>
+        <select id="log-date" onchange="updateProjDisplay()"></select>
+      </div>
+      <div class="form-group" id="proj-display-wrap">
+        <label>Projected sales</label>
+        <div style="font-family:var(--font-display);font-size:24px;letter-spacing:1px;color:var(--accent)" id="proj-display">—</div>
+      </div>
+      <div class="form-group">
+        <label>Actual sales today ($)</label>
+        <input type="number" id="log-sales" placeholder="0.00" min="0" inputmode="decimal" oninput="logAlert()">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Staff worked</label>
+          <input type="number" id="log-staff" placeholder="0" min="0" max="20" inputmode="numeric" oninput="logAlert()">
+        </div>
+        <div class="form-group">
+          <label>Avg hours each</label>
+          <input type="number" id="log-hrs" placeholder="7" min="1" max="16" inputmode="decimal" oninput="logAlert()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Security tonight?</label>
+          <select id="log-sec">
+            <option value="125">Yes — $125</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Weather / notes</label>
+          <input type="text" id="log-notes" placeholder="Hot, slow AM...">
+        </div>
+      </div>
+
+      <div id="log-alert-area"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="logDay()">Save Day ↗</button>
+        <button class="btn btn-ghost" onclick="clearLog()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE CHECK -->
+  <div class="section" id="tab-live">
+    <div class="card">
+      <div class="card-title"><span class="icon">⚡</span> Send Someone Home?</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5">Enter where you are right now. Get an instant answer on whether to cut staff.</p>
+
+      <div class="form-group">
+        <label>Sales so far today ($)</label>
+        <input type="number" id="lv-sales" placeholder="0" inputmode="decimal" oninput="liveCheck()">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Hours left today</label>
+          <input type="number" id="lv-hrs" placeholder="4" min="0" max="14" inputmode="decimal" oninput="liveCheck()">
+        </div>
+        <div class="form-group">
+          <label>Staff on clock</label>
+          <input type="number" id="lv-staff" placeholder="5" min="1" max="20" inputmode="numeric" oninput="liveCheck()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Expected sales rest of day ($)</label>
+        <input type="number" id="lv-expect" placeholder="0" inputmode="decimal" oninput="liveCheck()">
+      </div>
+
+      <div id="live-result"></div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="section" id="tab-history">
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Season Log</div>
+      <div class="log-scroll">
+        <table class="log-table" id="hist-table">
+          <thead><tr>
+            <th>Date</th><th>Proj</th><th>Actual</th><th>+/-</th><th>Labor</th><th>Net</th><th>%</th>
+          </tr></thead>
+          <tbody id="hist-body"></tbody>
+          <tfoot><tr>
+            <td>Total</td>
+            <td id="ft-proj">$317,207</td>
+            <td id="ft-sales">$0</td>
+            <td id="ft-vs">—</td>
+            <td id="ft-labor">$0</td>
+            <td id="ft-net">$0</td>
+            <td></td>
+          </tr></tfoot>
+        </table>
+      </div>
+      <div id="hist-empty" class="empty" style="display:none">
+        <div class="e-icon">📭</div>
+        No days logged yet. Start logging from the Log Day tab.
+      </div>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="exportCSV()">Export CSV ↗</button>
+        <button class="btn btn-ghost" onclick="clearAll()">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div class="section" id="tab-schedule">
+    <div id="sched-list"></div>
+  </div>
+
+</div>
+
+<script>
+const COMM = 0.1625, RATE = 17, PROJ_TOTAL = 317207, LABOR_BUDGET = 16500;
+
+const PROJ = {
+  'Sat Jun 20': 8100, 'Sun Jun 21': 2500, 'Mon Jun 22': 1200, 'Tue Jun 23': 2086,
+  'Wed Jun 24': 1793, 'Thu Jun 25': 2457, 'Fri Jun 26': 24000, 'Sat Jun 27': 6200,
+  'Sun Jun 28': 6800, 'Mon Jun 29': 12000, 'Tue Jun 30': 15902, 'Wed Jul 1': 15650,
+  'Thu Jul 2': 35119, 'Fri Jul 3': 58000, 'Sat Jul 4': 117000, 'Sun Jul 5': 4400
+};
+
+const SCHEDULE = [
+  { date: 'Sat Jun 13', phase: 'Setup', proj: 0, shifts: [
+    { time: '8AM–1PM', pos: 'Setup Crew × 5', cost: 500, note: '5 people × 5hrs × $20' }
+  ]},
+  { date: 'Fri Jun 19', phase: 'Setup', proj: 0, shifts: [
+    { time: '8AM–11AM', pos: 'Stocking × 4', cost: 204, note: '4 people × 3hrs × $17' },
+    { time: '10PM+', pos: 'Security', cost: 125, note: 'Night 1' }
+  ]},
+  { date: 'Sat Jun 20', phase: 'Slow Open', proj: 8100, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 1 Sales + 1 Cashier', cost: 357 },
+    { time: '3PM–10PM', pos: 'Manager + 2 Sales + 1 Cashier', cost: 476 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Sun Jun 21', phase: 'Slow', proj: 2500, shifts: [
+    { time: '8AM–3PM', pos: '1 Sales + 1 Cashier', cost: 238 },
+    { time: '3PM–10PM', pos: '1 Sales + 1 Cashier', cost: 238 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Mon–Thu Jun 22–25', phase: 'Slow', proj: 0, shifts: [
+    { time: '8AM–3PM', pos: '1 Sales', cost: 119, note: 'Send home if < $500 by noon' },
+    { time: '3PM–10PM', pos: '1 Sales + 1 Cashier', cost: 238 },
+    { time: '10PM+', pos: 'Security', cost: 125, note: 'Per night' }
+  ]},
+  { date: 'Fri Jun 26', phase: 'Building', proj: 24000, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 2 Sales + 2 Cashiers', cost: 595, note: '⚠️ Watch this day — was $20K on a Thursday' },
+    { time: '3PM–10PM', pos: 'Manager + 3 Sales + 3 Cashiers + 2 Baggers + Parking', cost: 952 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Sat Jun 27', phase: 'Building', proj: 6200, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 2 Sales + 1 Cashier', cost: 476 },
+    { time: '3PM–10PM', pos: 'Manager + 2 Sales + 2 Cashiers', cost: 595 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Sun Jun 28', phase: 'Building', proj: 6800, shifts: [
+    { time: '8AM–3PM', pos: '2 Sales + 1 Cashier', cost: 357 },
+    { time: '3PM–10PM', pos: '2 Sales + 2 Cashiers', cost: 476 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Mon Jun 29', phase: 'Building', proj: 12000, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 2 Sales + 1 Cashier', cost: 476 },
+    { time: '3PM–10PM', pos: 'Manager + 3 Sales + 2 Cashiers + 1 Bagger', cost: 714 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Tue Jun 30', phase: 'Building', proj: 15902, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 2 Sales + 2 Cashiers', cost: 595 },
+    { time: '3PM–10PM', pos: 'Manager + 3 Sales + 3 Cashiers + 2 Baggers', cost: 952 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Wed Jul 1', phase: 'Building', proj: 15650, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 2 Sales + 2 Cashiers', cost: 595 },
+    { time: '3PM–10PM', pos: 'Manager + 3 Sales + 3 Cashiers + 2 Baggers', cost: 952 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Thu Jul 2', phase: 'Peak', proj: 35119, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 3 Sales + 2 Cashiers + 1 Bagger + Parking', cost: 833 },
+    { time: '3PM–10PM', pos: 'Manager + 4 Sales + 4 Cashiers + 2 Baggers + Parking', cost: 1190 },
+    { time: '10PM+', pos: 'Security', cost: 125 }
+  ]},
+  { date: 'Fri Jul 3', phase: 'Crunch 🔥', proj: 58000, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 3 Sales + 3 Cashiers + 2 Baggers + Parking', cost: 1071 },
+    { time: '3PM–10PM', pos: 'Manager + 4 Sales + 5 Cashiers + 3 Baggers + 2 Parking', cost: 1428 },
+    { time: '10PM+', pos: 'Security', cost: 125, note: 'Most critical night' }
+  ]},
+  { date: 'Sat Jul 4', phase: 'MAX 🚀', proj: 117000, shifts: [
+    { time: '8AM–3PM', pos: 'Manager + 4 Sales + 3 Cashiers + 2 Baggers + 2 Parking', cost: 1190 },
+    { time: '3PM–Midnight+', pos: 'Manager + 5 Sales + 5 Cashiers + 3 Baggers + 2 Parking', cost: 1836, note: 'Extended hours' },
+    { time: 'Midnight+', pos: 'Security', cost: 125, note: 'Final security night' }
+  ]},
+  { date: 'Sun Jul 5', phase: 'Close Out', proj: 4400, shifts: [
+    { time: '8AM–1PM', pos: 'Manager + 1 Sales + 1 Cashier', cost: 255, note: 'Clearance sales' },
+    { time: '1PM–6PM', pos: 'Teardown × 5 + Inventory × 2', cost: 670, note: '5 × $20 + 2 × $17' }
+  ]}
+];
+
+const DATES = Object.keys(PROJ);
+let log = [];
+try { const s = localStorage.getItem('bl26'); if (s) log = JSON.parse(s); } catch(e){}
+
+function save() { try { localStorage.setItem('bl26', JSON.stringify(log)); } catch(e){} }
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtDiff(n) { return (n >= 0 ? '+' : '') + fmt(n); }
+
+// INIT DATE SELECT
+const dateSel = document.getElementById('log-date');
+DATES.forEach(d => { const o = document.createElement('option'); o.value = d; o.textContent = d; dateSel.appendChild(o); });
+updateProjDisplay();
+
+function updateProjDisplay() {
+  const p = PROJ[dateSel.value];
+  document.getElementById('proj-display').textContent = p ? fmt(p) : '—';
+}
+
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'history') renderHistory();
+  if (id === 'schedule') renderSchedule();
+}
+
+function totals() {
+  const ts = log.reduce((a, r) => a + r.sales, 0);
+  const tl = log.reduce((a, r) => a + r.labor, 0);
+  const tsec = log.reduce((a, r) => a + r.sec, 0);
+  const tp = log.reduce((a, r) => a + (PROJ[r.date] || 0), 0);
+  return { ts, tl, tsec, tc: ts * COMM, tn: ts * COMM - tl - tsec, tp };
+}
+
+function renderDashboard() {
+  const t = totals();
+  document.getElementById('d-sales').textContent = fmt(t.ts);
+  document.getElementById('d-comm').textContent = fmt(t.tc);
+  document.getElementById('d-labor').textContent = fmt(t.tl + t.tsec);
+  document.getElementById('d-net').textContent = fmt(t.tn);
+  const pct = Math.min(100, Math.round(t.ts / PROJ_TOTAL * 100));
+  document.getElementById('d-pace').style.width = pct + '%';
+  document.getElementById('d-pace-pct').textContent = pct + '% of season';
+  const vs = t.ts - t.tp;
+  document.getElementById('d-vs').textContent = t.tp > 0 ? fmtDiff(vs) : '—';
+  document.getElementById('d-vs-sub').textContent = t.tp > 0 ? (vs >= 0 ? 'Ahead of pace 🔥' : 'Behind pace') : 'Log days to compare';
+  const mNet = document.getElementById('m-net');
+  mNet.className = 'metric ' + (t.tn > 0 ? 'green' : t.tn < 0 ? 'red' : '');
+  const lp = (t.tl + t.tsec) / LABOR_BUDGET;
+  document.getElementById('m-labor').className = 'metric ' + (lp > 1 ? 'red' : lp > 0.8 ? 'amber' : '');
+  const mVs = document.getElementById('m-vs');
+  if (t.tp > 0) mVs.className = 'metric ' + (vs >= 0 ? 'green' : 'amber');
+
+  // Proj list
+  const list = document.getElementById('proj-list');
+  const logged = log.reduce((a, r) => { a[r.date] = r.sales; return a; }, {});
+  const max = Math.max(...Object.values(PROJ));
+  list.innerHTML = DATES.map(d => {
+    const isLogged = logged[d] !== undefined;
+    const actual = logged[d] || 0;
+    const proj = PROJ[d];
+    const displayAmt = isLogged ? actual : proj;
+    const pct = Math.round(displayAmt / max * 100);
+    const vs = isLogged ? actual - proj : null;
+    return `<div class="proj-date">
+      <div>
+        <div class="pd-date ${isLogged ? 'proj-logged' : ''}">${d}${isLogged ? ' ✓' : ''}</div>
+        <div class="pd-day">${isLogged ? 'Actual' : 'Projected'}</div>
+        <div class="pd-bar" style="width:120px"><div class="pd-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div style="text-align:right">
+        <div class="pd-amount ${isLogged ? 'proj-logged' : ''}">${fmt(displayAmt)}</div>
+        ${vs !== null ? `<div style="font-size:11px;color:${vs>=0?'#2ecc71':'#e74c3c'}">${fmtDiff(vs)}</div>` : `<div style="font-size:11px;color:var(--muted)">${fmt(proj)} proj</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function logAlert() {
+  const sales = parseFloat(document.getElementById('log-sales').value) || 0;
+  const staff = parseInt(document.getElementById('log-staff').value) || 0;
+  const hrs = parseFloat(document.getElementById('log-hrs').value) || 0;
+  const date = dateSel.value;
+  const proj = PROJ[date] || 0;
+  const labor = staff * RATE * hrs;
+  const comm = sales * COMM;
+  const lp = comm > 0 ? labor / comm : 0;
+  const vs = sales - proj;
+  let html = '';
+  if (proj && sales) {
+    html += `<div class="alert ${vs >= 0 ? 'alert-green' : 'alert-amber'}">vs projection: ${vs >= 0 ? 'ahead' : 'behind'} by ${fmt(Math.abs(vs))}</div>`;
+  }
+  if (staff && hrs) {
+    const cls = lp < 0.25 ? 'alert-green' : lp < 0.35 ? 'alert-amber' : 'alert-red';
+    const msg = lp < 0.25 ? `Labor healthy at ${Math.round(lp*100)}% of commission.` : lp < 0.35 ? `Watch it — labor at ${Math.round(lp*100)}%. Consider cutting staff.` : `Over budget — labor at ${Math.round(lp*100)}%. Send someone home.`;
+    html += `<div class="alert ${cls}">${msg}</div>`;
+  }
+  document.getElementById('log-alert-area').innerHTML = html;
+}
+
+function logDay() {
+  const date = dateSel.value;
+  const sales = parseFloat(document.getElementById('log-sales').value) || 0;
+  const staff = parseInt(document.getElementById('log-staff').value) || 0;
+  const hrs = parseFloat(document.getElementById('log-hrs').value) || 0;
+  const sec = parseInt(document.getElementById('log-sec').value) || 0;
+  const notes = document.getElementById('log-notes').value;
+  if (!sales && !staff) { alert('Enter at least sales or staff count.'); return; }
+  const labor = staff * RATE * hrs;
+  const idx = log.findIndex(r => r.date === date);
+  const rec = { date, sales, staff, hrs, labor, sec, notes };
+  if (idx >= 0) log[idx] = rec; else log.push(rec);
+  log.sort((a, b) => DATES.indexOf(a.date) - DATES.indexOf(b.date));
+  save();
+  document.getElementById('log-alert-area').innerHTML = `<div class="alert alert-green">✓ ${date} saved — net commission: ${fmt(sales * COMM - labor - sec)}</div>`;
+  renderDashboard();
+}
+
+function clearLog() {
+  ['log-sales','log-staff','log-hrs','log-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('log-alert-area').innerHTML = '';
+}
+
+function liveCheck() {
+  const sales = parseFloat(document.getElementById('lv-sales').value) || 0;
+  const hrsLeft = parseFloat(document.getElementById('lv-hrs').value) || 0;
+  const staff = parseInt(document.getElementById('lv-staff').value) || 0;
+  const expect = parseFloat(document.getElementById('lv-expect').value) || 0;
+  const el = document.getElementById('live-result');
+  if (!sales || !hrsLeft || !staff) { el.innerHTML = ''; return; }
+  const totalSales = sales + expect;
+  const remainLabor = staff * RATE * hrsLeft;
+  const totalComm = totalSales * COMM;
+  const lp = remainLabor / totalComm;
+  const safeStaff = Math.max(1, Math.floor(totalComm * 0.25 / (RATE * hrsLeft)));
+  const sendHome = Math.max(0, staff - safeStaff);
+  let html = '';
+  if (lp < 0.2) {
+    html = `<div class="alert alert-green">✅ You're good. ${staff} staff × ${hrsLeft} more hrs = ${fmt(remainLabor)} — only ${Math.round(lp*100)}% of projected commission. Stay the course.</div>`;
+  } else if (lp < 0.35) {
+    html = `<div class="alert alert-amber">⚠️ Getting close. Labor = ${Math.round(lp*100)}% of today's commission. Watch closely.</div>`;
+    if (sendHome > 0) html += `<div class="send-home-box"><strong>SEND HOME ${sendHome}</strong>Trim to ${safeStaff} staff to stay under 25% labor.</div>`;
+  } else {
+    html = `<div class="alert alert-red">🚨 Too high. Labor = ${Math.round(lp*100)}% of commission. Cut staff now.</div>`;
+    if (sendHome > 0) html += `<div class="send-home-box"><strong>SEND HOME ${sendHome} NOW</strong>Keep only ${safeStaff} people to protect your take-home.</div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderHistory() {
+  const t = totals();
+  const tbody = document.getElementById('hist-body');
+  const empty = document.getElementById('hist-empty');
+  if (log.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = log.map(r => {
+      const comm = r.sales * COMM;
+      const net = comm - r.labor - r.sec;
+      const lp = comm > 0 ? r.labor / comm : 0;
+      const vs = r.sales - (PROJ[r.date] || 0);
+      const bcls = lp < 0.25 ? 'badge-green' : lp < 0.4 ? 'badge-amber' : 'badge-red';
+      return `<tr>
+        <td>${r.date}</td>
+        <td style="color:var(--muted)">${fmt(PROJ[r.date]||0)}</td>
+        <td>${fmt(r.sales)}</td>
+        <td><span class="badge ${vs>=0?'badge-green':'badge-red'}">${fmtDiff(vs)}</span></td>
+        <td>${fmt(r.labor)}</td>
+        <td>${fmt(net)}</td>
+        <td><span class="badge ${bcls}">${Math.round(lp*100)}%</span></td>
+      </tr>`;
+    }).join('');
+  }
+  document.getElementById('ft-sales').textContent = fmt(t.ts);
+  document.getElementById('ft-labor').textContent = fmt(t.tl);
+  document.getElementById('ft-net').textContent = fmt(t.tn);
+  const tvs = t.ts - t.tp;
+  document.getElementById('ft-vs').innerHTML = t.tp > 0 ? `<span class="badge ${tvs>=0?'badge-green':'badge-red'}">${fmtDiff(tvs)}</span>` : '—';
+}
+
+function renderSchedule() {
+  const phaseColors = { 'Setup':'#888','Slow Open':'#6b6b6b','Slow':'#6b6b6b','Building':'#2ecc71','Peak':'#3498db','Crunch 🔥':'#ff4d1a','MAX 🚀':'#e74c3c','Close Out':'#888' };
+  document.getElementById('sched-list').innerHTML = SCHEDULE.map(d => {
+    const color = phaseColors[d.phase] || '#888';
+    const shifts = d.shifts.map(s => `
+      <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:3px">${s.time}</div>
+            <div style="font-size:13px;font-weight:500">${s.pos}</div>
+            ${s.note ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">${s.note}</div>` : ''}
+          </div>
+          <div style="font-family:var(--font-display);font-size:18px;letter-spacing:1px;color:var(--accent)">${fmt(s.cost)}</div>
+        </div>
+      </div>`).join('');
+    return `<div class="card" style="border-left:3px solid ${color};margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="font-family:var(--font-display);font-size:20px;letter-spacing:1px">${d.date}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${d.proj > 0 ? fmt(d.proj) + ' projected' : 'Pre-season'}</div>
+        </div>
+        <span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;background:${color}22;color:${color}">${d.phase}</span>
+      </div>
+      ${shifts}
+    </div>`;
+  }).join('');
+}
+
+function exportCSV() {
+  if (!log.length) { alert('No data yet.'); return; }
+  const hdr = 'Date,Projected,Actual,vs Proj,Labor,Security,Commission,Net,Notes\n';
+  const rows = log.map(r => {
+    const comm = (r.sales * COMM).toFixed(2);
+    const net = (r.sales * COMM - r.labor - r.sec).toFixed(2);
+    const vs = (r.sales - (PROJ[r.date] || 0)).toFixed(2);
+    return `${r.date},${PROJ[r.date]||0},${r.sales},${vs},${r.labor.toFixed(2)},${r.sec},${comm},${net},"${r.notes||''}"`;
+  }).join('\n');
+  const blob = new Blob([hdr + rows], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bucketlist_2026.csv';
+  a.click();
+}
+
+function clearAll() {
+  if (!confirm('Clear all season data? This cannot be undone.')) return;
+  log = []; save(); renderDashboard(); renderHistory();
+}
+
+// Initial render
+renderDashboard();
+renderSchedule();
+</script>
+</body>
+</html>

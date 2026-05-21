@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bucketlist — Clock In/Out Sign</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+.sign {
+  width: 400px;
+  border: 4px solid #0a0a0a;
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: center;
+}
+.sign-header {
+  background: #0a0a0a;
+  color: white;
+  padding: 20px;
+}
+.sign-brand { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px; }
+.sign-brand span { color: #ff4d1a; }
+.sign-sub { font-size: 12px; letter-spacing: 2px; color: #888; margin-top: 4px; }
+.sign-body { padding: 24px 20px; background: white; }
+.sign-instruction {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: #0a0a0a;
+  margin-bottom: 6px;
+}
+.sign-sub2 { font-size: 13px; color: #555; margin-bottom: 20px; line-height: 1.5; }
+.qr-box {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 20px;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8f8;
+  font-size: 12px;
+  color: #999;
+  padding: 10px;
+  text-align: center;
+  line-height: 1.5;
+}
+.sign-url {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: #ff4d1a;
+  word-break: break-all;
+  margin-bottom: 20px;
+}
+.sign-steps { text-align: left; margin: 0 auto; max-width: 300px; }
+.step { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.step-num {
+  width: 28px;
+  height: 28px;
+  background: #ff4d1a;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.step-text { font-size: 13px; color: #333; padding-top: 5px; line-height: 1.4; }
+.sign-footer {
+  background: #0a0a0a;
+  color: #555;
+  padding: 12px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+@media print {
+  body { padding: 0; }
+  .sign { border-radius: 0; border: none; }
+}
+</style>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#ff4d1a">
+</head>
+<body>
+<div class="sign">
+  <div class="sign-header">
+    <div class="sign-brand">BUCKET<span>LIST</span></div>
+    <div class="sign-sub">FIREWORKS · 2026</div>
+  </div>
+  <div class="sign-body">
+    <div class="sign-instruction">All Staff Must Clock In & Out</div>
+    <div class="sign-sub2">Scan the QR code below every time<br>you start or end a shift.</div>
+
+    <div class="qr-box">
+      ⬛ QR CODE GOES HERE ⬛<br><br>
+      After deploying to Netlify,<br>replace this with your<br>actual QR code image<br>pointing to:<br><strong>/clock.html</strong>
+    </div>
+
+    <div class="sign-url">YOUR-SITE.netlify.app/clock</div>
+
+    <div class="sign-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Scan the QR code with your phone camera</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Tap <strong>Clock In</strong> at the start of your shift — enter your name and position</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Tap <strong>Clock Out</strong> when your shift ends — search your name</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Do <strong>both</strong> every shift — no exceptions</div>
+      </div>
+    </div>
+  </div>
+  <div class="sign-footer">Questions? See the manager on duty.</div>
+</div>
+</body>
+</html>

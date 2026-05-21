@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0a">
+<title>Bucketlist Fireworks — Clock In/Out</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --text: #f0ede8;
+  --muted: #6b6b6b;
+  --accent: #ff4d1a;
+  --green: #2ecc71;
+  --amber: #f39c12;
+  --red: #e74c3c;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.brand { font-family: var(--font-display); font-size: 32px; letter-spacing: 3px; }
+.brand span { color: var(--accent); }
+.brand-sub { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-top: 2px; }
+
+.clock-display {
+  text-align: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.clock-time {
+  font-family: var(--font-display);
+  font-size: 52px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  line-height: 1;
+}
+.clock-date { font-size: 13px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+.main { flex: 1; padding: 20px 16px; }
+
+/* SCREEN STATES */
+.screen { display: none; }
+.screen.active { display: block; }
+
+.screen-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.screen-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+
+/* FORM */
+.form-group { margin-bottom: 14px; }
+label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+input, select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  padding: 13px 14px;
+  -webkit-appearance: none;
+}
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* BIG BUTTONS */
+.btn-big {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn-big:active { transform: scale(0.97); }
+.btn-in { background: var(--green); color: #000; }
+.btn-out { background: var(--accent); color: white; }
+.btn-ghost {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+/* STATUS CARD */
+.status-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.status-name { font-family: var(--font-display); font-size: 24px; letter-spacing: 1px; }
+.status-pos { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.status-time { font-size: 12px; color: var(--accent); margin-top: 6px; }
+.status-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 6px;
+}
+.pill-in { background: rgba(46,204,113,0.2); color: var(--green); }
+.pill-out { background: rgba(255,77,26,0.2); color: var(--accent); }
+
+/* SUCCESS */
+.success-icon { font-size: 56px; text-align: center; margin: 20px 0 10px; }
+.success-msg { font-family: var(--font-display); font-size: 28px; letter-spacing: 2px; text-align: center; margin-bottom: 6px; }
+.success-sub { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.5; }
+.hours-display {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  margin: 16px 0;
+}
+.hours-num { font-family: var(--font-display); font-size: 42px; letter-spacing: 2px; color: var(--green); }
+.hours-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.pay-num { font-family: var(--font-display); font-size: 28px; letter-spacing: 1px; color: var(--accent); margin-top: 8px; }
+.pay-label { font-size: 11px; color: var(--muted); }
+
+/* LOG TABLE */
+.log-section { margin-top: 20px; }
+.log-title { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; margin-bottom: 10px; }
+.log-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.le-name { font-size: 14px; font-weight: 500; }
+.le-pos { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.le-time { text-align: right; }
+.le-hrs { font-family: var(--font-display); font-size: 20px; letter-spacing: 1px; color: var(--accent); }
+.le-pay { font-size: 11px; color: var(--muted); }
+.le-active { color: var(--green); font-size: 11px; font-weight: 600; }
+
+.summary-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+.summary-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+.summary-row:last-child { border-bottom: none; font-weight: 600; font-size: 14px; color: var(--accent); }
+.summary-label { color: var(--muted); }
+
+/* EMAIL PROMPT */
+.email-prompt {
+  background: rgba(52,152,219,0.08);
+  border: 1px solid rgba(52,152,219,0.25);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+.ep-title { font-size: 13px; font-weight: 600; color: #3498db; margin-bottom: 8px; }
+.ep-row { display: flex; gap: 8px; }
+.ep-input { flex: 1; font-size: 14px; }
+.ep-btn {
+  padding: 10px 16px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+</style>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#ff4d1a">
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">BUCKET<span>LIST</span></div>
+  <div class="brand-sub">Staff Time Clock · 2026</div>
+</div>
+
+<div class="clock-display">
+  <div class="clock-time" id="live-clock">00:00:00</div>
+  <div class="clock-date" id="live-date">—</div>
+</div>
+
+<div class="main">
+
+  <!-- CHOOSE ACTION -->
+  <div class="screen active" id="screen-choose">
+    <div class="screen-title">Hello 👋</div>
+    <div class="screen-sub">Are you clocking in for your shift or clocking out?</div>
+    <button class="btn-big btn-in" onclick="showScreen('screen-in')">⏱ CLOCK IN</button>
+    <button class="btn-big btn-out" onclick="showScreen('screen-find-out')">🏁 CLOCK OUT</button>
+    <div class="divider"></div>
+    <button class="btn-ghost" onclick="showScreen('screen-manager')">📊 Manager View</button>
+  </div>
+
+  <!-- CLOCK IN FORM -->
+  <div class="screen" id="screen-in">
+    <div class="screen-title">Clock In</div>
+    <div class="screen-sub">Fill this out when your shift starts.</div>
+    <div class="form-group">
+      <label>Your name</label>
+      <input type="text" id="in-name" placeholder="First & Last Name" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label>Your position today</label>
+      <select id="in-pos">
+        <option value="">Select your role...</option>
+        <option>Manager on Duty</option>
+        <option>Sales Floor</option>
+        <option>Cashier</option>
+        <option>Bagger</option>
+        <option>Parking / Traffic</option>
+        <option>Stocking / Inventory</option>
+        <option>Setup Crew</option>
+        <option>Teardown Crew</option>
+        <option>Overnight Security</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Your cell (for records)</label>
+      <input type="tel" id="in-phone" placeholder="615-555-0000" inputmode="tel" autocomplete="tel">
+    </div>
+    <div id="in-error" style="color:var(--red);font-size:13px;margin-bottom:10px"></div>
+    <button class="btn-submit" onclick="clockIn()">CLOCK IN NOW</button>
+    <button class="btn-ghost" onclick="showScreen('screen-choose')">← Back</button>
+  </div>
+
+  <!-- FIND FOR CLOCK OUT -->
+  <div class="screen" id="screen-find-out">
+    <div class="screen-title">Clock Out</div>
+    <div class="screen-sub">Enter your name to find your shift.</div>
+    <div class="form-group">
+      <label>Your name</label>
+      <input type="text" id="out-name" placeholder="First & Last Name" autocomplete="name">
+    </div>
+    <div id="out-matches" style="margin-top:10px"></div>
+    <div id="out-error" style="color:var(--red);font-size:13px;margin-bottom:10px"></div>
+    <button class="btn-submit" onclick="findShift()">FIND MY SHIFT</button>
+    <button class="btn-ghost" onclick="showScreen('screen-choose')">← Back</button>
+  </div>
+
+  <!-- CLOCK OUT CONFIRM -->
+  <div class="screen" id="screen-out-confirm">
+    <div class="screen-title">Confirm Clock Out</div>
+    <div id="out-confirm-card"></div>
+    <button class="btn-big btn-out" onclick="clockOut()">CONFIRM CLOCK OUT</button>
+    <button class="btn-ghost" onclick="showScreen('screen-choose')">← Cancel</button>
+  </div>
+
+  <!-- SUCCESS IN -->
+  <div class="screen" id="screen-success-in">
+    <div class="success-icon">✅</div>
+    <div class="success-msg">CLOCKED IN!</div>
+    <div class="success-sub" id="si-sub">You're on the clock. Have a great shift!</div>
+    <div style="margin-top:20px">
+      <button class="btn-ghost" onclick="showScreen('screen-choose')">Done</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS OUT -->
+  <div class="screen" id="screen-success-out">
+    <div class="success-icon">🎉</div>
+    <div class="success-msg">CLOCKED OUT!</div>
+    <div class="success-sub" id="so-sub">Great work today!</div>
+    <div class="hours-display">
+      <div class="hours-num" id="so-hrs">0.0</div>
+      <div class="hours-label">hours worked</div>
+      <div class="pay-num" id="so-pay">$0</div>
+      <div class="pay-label">estimated pay @ $17/hr</div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn-ghost" onclick="showScreen('screen-choose')">Done</button>
+    </div>
+  </div>
+
+  <!-- MANAGER VIEW -->
+  <div class="screen" id="screen-manager">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="screen-title" style="margin-bottom:0">Today's Crew</div>
+      <button class="btn-ghost" style="width:auto;padding:6px 12px;margin:0;font-size:12px" onclick="showScreen('screen-choose')">← Back</button>
+    </div>
+
+    <div id="mgr-active">
+      <div class="log-title">Currently On Clock</div>
+      <div id="mgr-clocked-in"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="log-title">Completed Shifts</div>
+      <div id="mgr-completed"></div>
+    </div>
+
+    <div class="summary-box" id="mgr-summary"></div>
+
+    <div class="email-prompt">
+      <div class="ep-title">📧 Email daily summary</div>
+      <div class="ep-row">
+        <input type="email" id="email-addr" class="ep-input" placeholder="your@email.com" inputmode="email">
+        <button class="ep-btn" onclick="sendEmail()">Send</button>
+      </div>
+      <div id="email-status" style="font-size:12px;margin-top:8px;color:var(--muted)"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn-ghost" onclick="exportShifts()" style="flex:2">Export CSV ↗</button>
+      <button class="btn-ghost" onclick="clearShifts()" style="flex:1;color:var(--red)">Clear</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const RATE = 17;
+let shifts = [];
+let pendingClockOut = null;
+
+try { const s = localStorage.getItem('bl26_shifts'); if (s) shifts = JSON.parse(s); } catch(e){}
+
+function save() { try { localStorage.setItem('bl26_shifts', JSON.stringify(shifts)); } catch(e){} }
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtHrs(ms) { return (ms / 3600000).toFixed(2); }
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+function todayStr() { return new Date().toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' }); }
+
+// LIVE CLOCK
+function updateClock() {
+  const now = new Date();
+  document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screen-manager') renderManager();
+  // Clear errors
+  ['in-error','out-error'].forEach(e => { const el = document.getElementById(e); if(el) el.textContent=''; });
+}
+
+function clockIn() {
+  const name = document.getElementById('in-name').value.trim();
+  const pos = document.getElementById('in-pos').value;
+  const phone = document.getElementById('in-phone').value.trim();
+  if (!name) { document.getElementById('in-error').textContent = 'Please enter your name.'; return; }
+  if (!pos) { document.getElementById('in-error').textContent = 'Please select your position.'; return; }
+
+  // Check if already clocked in
+  const active = shifts.find(s => s.name.toLowerCase() === name.toLowerCase() && !s.clockOut);
+  if (active) {
+    document.getElementById('in-error').textContent = `${name} is already clocked in since ${fmtTime(active.clockIn)}.`;
+    return;
+  }
+
+  const shift = { id: Date.now(), name, pos, phone, date: todayStr(), clockIn: Date.now(), clockOut: null };
+  shifts.push(shift);
+  save();
+  document.getElementById('si-sub').textContent = `${name} — ${pos} — In at ${fmtTime(shift.clockIn)}`;
+  document.getElementById('in-name').value = '';
+  document.getElementById('in-pos').value = '';
+  document.getElementById('in-phone').value = '';
+  showScreen('screen-success-in');
+}
+
+function findShift() {
+  const name = document.getElementById('out-name').value.trim();
+  if (!name) { document.getElementById('out-error').textContent = 'Please enter your name.'; return; }
+  const matches = shifts.filter(s => s.name.toLowerCase().includes(name.toLowerCase()) && !s.clockOut);
+  if (matches.length === 0) {
+    document.getElementById('out-error').textContent = 'No active shift found. Are you sure you clocked in?';
+    document.getElementById('out-matches').innerHTML = '';
+    return;
+  }
+  if (matches.length === 1) {
+    pendingClockOut = matches[0];
+    showConfirmOut(matches[0]);
+  } else {
+    document.getElementById('out-matches').innerHTML = matches.map(s =>
+      `<div class="status-card" onclick="selectOut(${s.id})" style="cursor:pointer;border-color:var(--accent)">
+        <div class="status-name">${s.name}</div>
+        <div class="status-pos">${s.pos}</div>
+        <div class="status-time">In at ${fmtTime(s.clockIn)}</div>
+        <span class="status-pill pill-in">TAP TO SELECT</span>
+      </div>`).join('');
+    document.getElementById('out-error').textContent = '';
+  }
+}
+
+function selectOut(id) {
+  pendingClockOut = shifts.find(s => s.id === id);
+  if (pendingClockOut) showConfirmOut(pendingClockOut);
+}
+
+function showConfirmOut(shift) {
+  const now = Date.now();
+  const hrs = (now - shift.clockIn) / 3600000;
+  document.getElementById('out-confirm-card').innerHTML = `
+    <div class="status-card">
+      <div class="status-name">${shift.name}</div>
+      <div class="status-pos">${shift.pos}</div>
+      <div class="status-time">Clocked in at ${fmtTime(shift.clockIn)}</div>
+      <div class="status-time">Hours so far: ${hrs.toFixed(2)} hrs = ${fmt(hrs * RATE)}</div>
+    </div>`;
+  showScreen('screen-out-confirm');
+}
+
+function clockOut() {
+  if (!pendingClockOut) return;
+  const idx = shifts.findIndex(s => s.id === pendingClockOut.id);
+  if (idx < 0) return;
+  shifts[idx].clockOut = Date.now();
+  const hrs = (shifts[idx].clockOut - shifts[idx].clockIn) / 3600000;
+  const pay = hrs * RATE;
+  save();
+  document.getElementById('so-sub').textContent = `${shifts[idx].name} — ${shifts[idx].pos}`;
+  document.getElementById('so-hrs').textContent = hrs.toFixed(2);
+  document.getElementById('so-pay').textContent = fmt(pay);
+  document.getElementById('out-name').value = '';
+  document.getElementById('out-matches').innerHTML = '';
+  pendingClockOut = null;
+  showScreen('screen-success-out');
+}
+
+function renderManager() {
+  const today = todayStr();
+  const todayShifts = shifts.filter(s => s.date === today);
+  const active = todayShifts.filter(s => !s.clockOut);
+  const done = todayShifts.filter(s => s.clockOut);
+
+  const activeEl = document.getElementById('mgr-clocked-in');
+  activeEl.innerHTML = active.length === 0
+    ? '<div style="color:var(--muted);font-size:13px;padding:8px 0">Nobody clocked in right now.</div>'
+    : active.map(s => {
+        const hrs = (Date.now() - s.clockIn) / 3600000;
+        return `<div class="log-entry">
+          <div><div class="le-name">${s.name}</div><div class="le-pos">${s.pos}</div></div>
+          <div class="le-time"><div class="le-hrs le-active">ACTIVE</div><div class="le-pay">In ${fmtTime(s.clockIn)} · ${hrs.toFixed(1)}h so far</div></div>
+        </div>`;
+      }).join('');
+
+  const doneEl = document.getElementById('mgr-completed');
+  doneEl.innerHTML = done.length === 0
+    ? '<div style="color:var(--muted);font-size:13px;padding:8px 0">No completed shifts yet today.</div>'
+    : done.map(s => {
+        const hrs = (s.clockOut - s.clockIn) / 3600000;
+        const pay = hrs * RATE;
+        return `<div class="log-entry">
+          <div><div class="le-name">${s.name}</div><div class="le-pos">${s.pos}</div><div class="le-pay" style="margin-top:2px">${fmtTime(s.clockIn)} → ${fmtTime(s.clockOut)}</div></div>
+          <div class="le-time"><div class="le-hrs">${hrs.toFixed(2)}</div><div class="le-pay">${fmt(pay)}</div></div>
+        </div>`;
+      }).join('');
+
+  const totalHrs = done.reduce((a, s) => a + (s.clockOut - s.clockIn) / 3600000, 0);
+  const totalPay = totalHrs * RATE;
+  const activeHrs = active.reduce((a, s) => a + (Date.now() - s.clockIn) / 3600000, 0);
+  const activePay = activeHrs * RATE;
+
+  document.getElementById('mgr-summary').innerHTML = `
+    <div class="summary-row"><span class="summary-label">Staff completed shifts</span><span>${done.length}</span></div>
+    <div class="summary-row"><span class="summary-label">Staff currently on clock</span><span>${active.length}</span></div>
+    <div class="summary-row"><span class="summary-label">Completed labor cost</span><span>${fmt(totalPay)}</span></div>
+    <div class="summary-row"><span class="summary-label">Active labor (running)</span><span style="color:var(--amber)">${fmt(activePay)}</span></div>
+    <div class="summary-row"><span>Total labor today</span><span>${fmt(totalPay + activePay)}</span></div>`;
+}
+
+function sendEmail() {
+  const email = document.getElementById('email-addr').value.trim();
+  if (!email) { document.getElementById('email-status').textContent = 'Enter an email address.'; return; }
+  const today = todayStr();
+  const todayShifts = shifts.filter(s => s.date === today);
+  const done = todayShifts.filter(s => s.clockOut);
+  const active = todayShifts.filter(s => !s.clockOut);
+  const totalHrs = done.reduce((a, s) => a + (s.clockOut - s.clockIn) / 3600000, 0);
+  const totalPay = totalHrs * RATE;
+
+  let body = `BUCKETLIST FIREWORKS — Daily Shift Summary\n${today}\n\n`;
+  body += `COMPLETED SHIFTS\n${'─'.repeat(40)}\n`;
+  done.forEach(s => {
+    const hrs = (s.clockOut - s.clockIn) / 3600000;
+    body += `${s.name} | ${s.pos}\n  In: ${fmtTime(s.clockIn)} | Out: ${fmtTime(s.clockOut)} | ${hrs.toFixed(2)} hrs | ${fmt(hrs * RATE)}\n`;
+  });
+  if (active.length > 0) {
+    body += `\nSTILL CLOCKED IN\n${'─'.repeat(40)}\n`;
+    active.forEach(s => { body += `${s.name} | ${s.pos} | In: ${fmtTime(s.clockIn)}\n`; });
+  }
+  body += `\nTOTAL COMPLETED LABOR: ${fmt(totalPay)} (${totalHrs.toFixed(2)} hrs)\n`;
+  body += `\nGenerated by Bucketlist Fireworks Time Clock`;
+
+  const subject = `Bucketlist Shifts — ${today}`;
+  const mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+  document.getElementById('email-status').textContent = '✓ Opening your email app...';
+}
+
+function exportShifts() {
+  if (!shifts.length) { alert('No shifts recorded yet.'); return; }
+  const hdr = 'Date,Name,Position,Phone,Clock In,Clock Out,Hours,Pay\n';
+  const rows = shifts.map(s => {
+    const hrs = s.clockOut ? ((s.clockOut - s.clockIn) / 3600000).toFixed(2) : 'active';
+    const pay = s.clockOut ? (parseFloat(hrs) * RATE).toFixed(2) : '—';
+    return `"${s.date}","${s.name}","${s.pos}","${s.phone||''}","${fmtTime(s.clockIn)}","${s.clockOut ? fmtTime(s.clockOut) : 'active'}",${hrs},${pay}`;
+  }).join('\n');
+  const blob = new Blob([hdr + rows], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bucketlist_shifts_2026.csv';
+  a.click();
+}
+
+function clearShifts() {
+  if (!confirm('Clear ALL shift records? This cannot be undone.')) return;
+  shifts = []; save(); renderManager();
+}
+</script>
+</body>
+</html>

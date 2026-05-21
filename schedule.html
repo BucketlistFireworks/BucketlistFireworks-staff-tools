@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Bucketlist Fireworks — 2026 Staff Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--border:#2a2a2a;--text:#f0ede8;--muted:#6b6b6b;--accent:#ff4d1a;--green:#2ecc71;--amber:#f39c12;--blue:#3498db;--purple:#9b59b6;--font-display:'Bebas Neue',sans-serif;--font-body:'DM Sans',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;}
+.header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg);z-index:100;gap:12px;flex-wrap:wrap;}
+.brand{font-family:var(--font-display);font-size:24px;letter-spacing:2px;}
+.brand span{color:var(--accent);}
+.header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.mode-toggle{display:flex;background:var(--surface2);border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.mode-btn{padding:7px 14px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--muted);transition:all 0.15s;letter-spacing:0.3px;}
+.mode-btn.active{background:var(--accent);color:white;}
+.btn{padding:7px 14px;border-radius:8px;font-family:var(--font-body);font-size:11px;font-weight:600;border:none;cursor:pointer;}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-save{background:var(--green);color:#000;}
+.filter-bar{display:flex;gap:6px;padding:10px 20px;overflow-x:auto;border-bottom:1px solid var(--border);scrollbar-width:none;}
+.filter-bar::-webkit-scrollbar{display:none;}
+.filter-btn{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;}
+.filter-btn.active{background:var(--accent);color:white;border-color:var(--accent);}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
+.stat{background:var(--surface);padding:10px 14px;}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
+.stat-val{font-family:var(--font-display);font-size:20px;letter-spacing:1px;}
+.green{color:var(--green);}.amber{color:var(--amber);}
+.staff-banner{display:none;background:var(--green);color:#000;padding:10px 20px;font-size:13px;font-weight:600;text-align:center;}
+.staff-banner.show{display:block;}
+.main{padding:14px 20px;}
+.day-block{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.day-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--surface);border-bottom:1px solid var(--border);cursor:pointer;}
+.day-date{font-family:var(--font-display);font-size:19px;letter-spacing:1px;}
+.day-meta{font-size:11px;color:var(--muted);margin-top:1px;}
+.day-right{display:flex;align-items:center;gap:8px;}
+.phase-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;}
+.ph-setup{background:rgba(243,156,18,0.15);color:var(--amber);}
+.ph-slow{background:rgba(107,107,107,0.2);color:var(--muted);}
+.ph-build{background:rgba(46,204,113,0.15);color:var(--green);}
+.ph-peak{background:rgba(52,152,219,0.15);color:var(--blue);}
+.ph-crunch{background:rgba(255,77,26,0.15);color:var(--accent);}
+.ph-close{background:rgba(107,107,107,0.2);color:var(--muted);}
+.day-cost{font-family:var(--font-display);font-size:17px;color:var(--accent);}
+.chevron{font-size:11px;color:var(--muted);transition:transform 0.2s;}
+.day-block.collapsed .chevron{transform:rotate(-90deg);}
+.shifts-wrap{overflow:hidden;}
+.day-block.collapsed .shifts-wrap{display:none;}
+.shifts-table{width:100%;border-collapse:collapse;font-size:12px;}
+.shifts-table thead th{background:var(--surface2);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.4px;padding:7px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.shifts-table tbody tr{border-bottom:1px solid var(--border);}
+.shifts-table tbody tr:last-child{border-bottom:none;}
+.shifts-table tbody td{padding:7px 12px;vertical-align:middle;}
+.time-cell{color:var(--muted);font-size:11px;white-space:nowrap;}
+.cost-cell{font-family:var(--font-display);font-size:14px;color:var(--accent);white-space:nowrap;}
+.note-cell{font-size:10px;color:var(--muted);}
+.pos{display:inline-block;font-size:10px;font-weight:500;padding:2px 6px;border-radius:5px;white-space:nowrap;}
+.pos-mgr{background:rgba(155,89,182,0.15);color:var(--purple);}
+.pos-sales{background:rgba(46,204,113,0.12);color:var(--green);}
+.pos-cash{background:rgba(52,152,219,0.12);color:var(--blue);}
+.pos-bag{background:rgba(155,89,182,0.12);color:#bb8fce;}
+.pos-park{background:rgba(243,156,18,0.12);color:var(--amber);}
+.pos-stock{background:rgba(231,76,60,0.1);color:#ec7063;}
+.pos-setup{background:rgba(243,156,18,0.15);color:var(--amber);}
+.pos-sec{background:rgba(107,107,107,0.15);color:var(--muted);}
+.slots-wrap{display:flex;flex-direction:column;gap:3px;}
+.name-input{width:100%;min-width:130px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-body);font-size:12px;padding:5px 8px;transition:border-color 0.15s;}
+.name-input:focus{outline:none;border-color:var(--accent);}
+.name-input.filled{border-color:var(--green);background:rgba(46,204,113,0.05);}
+.name-input::placeholder{color:var(--muted);font-size:11px;}
+.name-display{font-size:13px;font-weight:500;color:var(--text);display:block;}
+.name-display.empty{color:var(--muted);font-style:italic;font-size:11px;font-weight:400;}
+.names-list{display:flex;flex-direction:column;gap:3px;}
+.note-row td{background:rgba(255,77,26,0.04);font-size:11px;color:var(--muted);font-style:italic;padding:5px 12px;}
+@media print{
+  .header-right,.filter-bar,.chevron,.mode-toggle,.btn{display:none!important;}
+  .staff-banner{display:block!important;background:#2ecc71;-webkit-print-color-adjust:exact;}
+  body{background:white;color:black;font-size:11px;}
+  .day-block{border:1px solid #ccc;page-break-inside:avoid;margin-bottom:8px;}
+  .day-header{background:#f0f0f0!important;}
+  .shifts-table thead th{background:#333!important;color:white!important;-webkit-print-color-adjust:exact;}
+  .shifts-wrap{display:block!important;}
+  .name-input{display:none;}
+  :root{--text:#000;--muted:#555;--accent:#c0392b;--green:#27ae60;}
+  .stat{background:#f9f9f9;border:1px solid #ddd;}
+  .stats-bar{background:#ddd;}
+  .main{padding:8px;}
+}
+@media(max-width:600px){
+  .stats-bar{grid-template-columns:1fr 1fr;}
+  .header{padding:10px 14px;}
+  .main{padding:10px 14px;overflow-x:auto;}
+  .shifts-table{min-width:480px;}
+}
+</style>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#ff4d1a">
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="brand">BUCKET<span>LIST</span></div>
+    <div style="font-size:10px;color:var(--muted);margin-top:1px;letter-spacing:0.5px">FIREWORKS · 2026 STAFF SCHEDULE</div>
+  </div>
+  <div class="header-right">
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mgr-btn" onclick="setMode('manager')">Manager Mode</button>
+      <button class="mode-btn" id="staff-btn" onclick="setMode('staff')">Staff View</button>
+    </div>
+    <button class="btn btn-save" onclick="saveNames()" id="save-btn">Save Schedule</button>
+    <button class="btn btn-ghost" onclick="window.print()">Print</button>
+    <button class="btn btn-ghost" onclick="expandAll()">+ All</button>
+    <button class="btn btn-ghost" onclick="collapseAll()">− All</button>
+  </div>
+</div>
+<div id="staff-banner" class="staff-banner">Bucketlist Fireworks 2026 — Official Staff Schedule · Last updated: <span id="last-updated">Not saved yet</span></div>
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterPhase('all',this)">All Days</button>
+  <button class="filter-btn" onclick="filterPhase('setup',this)">Setup</button>
+  <button class="filter-btn" onclick="filterPhase('slow',this)">Slow Open</button>
+  <button class="filter-btn" onclick="filterPhase('build',this)">Building</button>
+  <button class="filter-btn" onclick="filterPhase('peak',this)">Peak</button>
+  <button class="filter-btn" onclick="filterPhase('crunch',this)">Crunch</button>
+  <button class="filter-btn" onclick="filterPhase('close',this)">Close Out</button>
+</div>
+<div class="stats-bar">
+  <div class="stat"><div class="stat-label">Total slots</div><div class="stat-val" id="stat-total">-</div></div>
+  <div class="stat"><div class="stat-label">Assigned</div><div class="stat-val green" id="stat-filled">0</div></div>
+  <div class="stat"><div class="stat-label">Still needed</div><div class="stat-val amber" id="stat-needed">-</div></div>
+  <div class="stat"><div class="stat-label">Season labor</div><div class="stat-val" id="stat-labor">-</div></div>
+</div>
+<div class="main" id="schedule"></div>
+<script>
+var DAYS=[
+{id:'setup1',date:'Sat Jun 13',label:'Tent setup',phase:'setup',proj:0,note:'Pre-season — tent goes up today',shifts:[
+  {time:'8:00 AM – 1:00 PM',pos:'Setup Crew',cls:'pos-setup',count:5,rate:20,hrs:5,slots:5,note:'5 people x 5 hrs x $20/hr'}]},
+{id:'setup2',date:'Fri Jun 19',label:'Stocking + security starts',phase:'setup',proj:0,shifts:[
+  {time:'8:00 AM – 11:00 AM',pos:'Stocking Crew',cls:'pos-stock',count:4,rate:17,hrs:3,slots:4,note:'4 people x 3 hrs x $17/hr'},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1,note:'Night 1 — $125 flat'}]},
+{id:'d620',date:'Sat Jun 20',label:'Opening day · proj $8,100',phase:'slow',proj:8100,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1,note:'Overlap 2:30-3:30'},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d621',date:'Sun Jun 21',label:'Sunday · proj $2,500',phase:'slow',proj:2500,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d622',date:'Mon Jun 22',label:'Weekday · proj $1,200',phase:'slow',proj:1200,note:'Send AM person home if under $500 by noon',shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d623',date:'Tue Jun 23',label:'Weekday · proj $2,086',phase:'slow',proj:2086,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d624',date:'Wed Jun 24',label:'Weekday · proj $1,793',phase:'slow',proj:1793,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d625',date:'Thu Jun 25',label:'Weekday · proj $2,457',phase:'slow',proj:2457,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1,note:'Pre-weekend prep'},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d626',date:'Fri Jun 26',label:'Watch this day · proj $24,000',phase:'build',proj:24000,note:'Was $20.5K on a Thursday last year — could run big',shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1,note:'Overlap 2:30-3:30'},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Bagger',cls:'pos-bag',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Parking / Traffic',cls:'pos-park',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d627',date:'Sat Jun 27',label:'Saturday · proj $6,200',phase:'build',proj:6200,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:2,rate:17,hrs:7,slots:2},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d628',date:'Sun Jun 28',label:'Sunday · proj $6,800',phase:'build',proj:6800,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:2,rate:17,hrs:7,slots:2},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d629',date:'Mon Jun 29',label:'Weekday · proj $12,000',phase:'build',proj:12000,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Bagger',cls:'pos-bag',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d630',date:'Tue Jun 30',label:'Strong weekday · proj $15,902',phase:'build',proj:15902,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Bagger',cls:'pos-bag',count:2,rate:17,hrs:7,slots:2},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d701',date:'Wed Jul 1',label:'Strong weekday · proj $15,650',phase:'build',proj:15650,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Bagger',cls:'pos-bag',count:2,rate:17,hrs:7,slots:2},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d702',date:'Thu Jul 2',label:'Peak · proj $35,119',phase:'peak',proj:35119,shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:3,rate:17,hrs:7,slots:3},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Bagger',cls:'pos-bag',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Parking / Traffic',cls:'pos-park',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1,note:'Overlap 2:30-3:30'},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:4,rate:17,hrs:7,slots:4},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:4,rate:17,hrs:7,slots:4},
+  {time:'3:00 PM – 10:00 PM',pos:'Bagger',cls:'pos-bag',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – 10:00 PM',pos:'Parking / Traffic',cls:'pos-park',count:1,rate:17,hrs:7,slots:1},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d703',date:'Fri Jul 3',label:'Crunch · proj $58,000',phase:'crunch',proj:58000,note:'Most critical security night',shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:3,rate:17,hrs:7,slots:3},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:3,rate:17,hrs:7,slots:3},
+  {time:'8:00 AM – 3:00 PM',pos:'Bagger',cls:'pos-bag',count:2,rate:17,hrs:7,slots:2,note:'Start baggers AM on Jul 3'},
+  {time:'8:00 AM – 3:00 PM',pos:'Parking / Traffic',cls:'pos-park',count:1,rate:17,hrs:7,slots:1},
+  {time:'3:00 PM – 10:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1,note:'Overlap 2:30-3:30'},
+  {time:'3:00 PM – 10:00 PM',pos:'Sales Floor',cls:'pos-sales',count:4,rate:17,hrs:7,slots:4},
+  {time:'3:00 PM – 10:00 PM',pos:'Cashier',cls:'pos-cash',count:5,rate:17,hrs:7,slots:5,note:'Full 5-register push'},
+  {time:'3:00 PM – 10:00 PM',pos:'Bagger',cls:'pos-bag',count:3,rate:17,hrs:7,slots:3},
+  {time:'3:00 PM – 10:00 PM',pos:'Parking / Traffic',cls:'pos-park',count:2,rate:17,hrs:7,slots:2},
+  {time:'10:00 PM+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1}]},
+{id:'d704',date:'Sat Jul 4',label:'THE BIG DAY · proj $117,000',phase:'crunch',proj:117000,note:'Extended hours past midnight — ALL staff mandatory',shifts:[
+  {time:'8:00 AM – 3:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:7,slots:1},
+  {time:'8:00 AM – 3:00 PM',pos:'Sales Floor',cls:'pos-sales',count:4,rate:17,hrs:7,slots:4},
+  {time:'8:00 AM – 3:00 PM',pos:'Cashier',cls:'pos-cash',count:3,rate:17,hrs:7,slots:3},
+  {time:'8:00 AM – 3:00 PM',pos:'Bagger',cls:'pos-bag',count:2,rate:17,hrs:7,slots:2},
+  {time:'8:00 AM – 3:00 PM',pos:'Parking / Traffic',cls:'pos-park',count:2,rate:17,hrs:7,slots:2},
+  {time:'3:00 PM – Midnight+',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:9,slots:1,note:'Extended close'},
+  {time:'3:00 PM – Midnight+',pos:'Sales Floor',cls:'pos-sales',count:5,rate:17,hrs:9,slots:5},
+  {time:'3:00 PM – Midnight+',pos:'Cashier',cls:'pos-cash',count:5,rate:17,hrs:9,slots:5,note:'Full 5-register push'},
+  {time:'3:00 PM – Midnight+',pos:'Bagger',cls:'pos-bag',count:3,rate:17,hrs:9,slots:3},
+  {time:'3:00 PM – Midnight+',pos:'Parking / Traffic',cls:'pos-park',count:2,rate:17,hrs:9,slots:2,note:'Critical exit flow'},
+  {time:'Midnight+',pos:'Overnight Security',cls:'pos-sec',count:1,rate:0,hrs:0,flat:125,slots:1,note:'Final security night'}]},
+{id:'d705',date:'Sun Jul 5',label:'Wind down + teardown · proj $4,400',phase:'close',proj:4400,shifts:[
+  {time:'8:00 AM – 1:00 PM',pos:'Manager on Duty',cls:'pos-mgr',count:1,rate:17,hrs:5,slots:1,note:'Oversees close + teardown'},
+  {time:'8:00 AM – 1:00 PM',pos:'Sales Floor',cls:'pos-sales',count:1,rate:17,hrs:5,slots:1,note:'Clearance sales'},
+  {time:'8:00 AM – 1:00 PM',pos:'Cashier',cls:'pos-cash',count:1,rate:17,hrs:5,slots:1},
+  {time:'1:00 PM – 6:00 PM',pos:'Teardown Crew',cls:'pos-setup',count:5,rate:20,hrs:5,slots:5,note:'5 people x 5 hrs x $20'},
+  {time:'1:00 PM – 6:00 PM',pos:'Inventory Count',cls:'pos-stock',count:2,rate:17,hrs:5,slots:2,note:'Document leftovers for 2027'}]}
+];
+
+var PHASE_LABELS={setup:'Setup',slow:'Slow Open',build:'Building',peak:'Peak',crunch:'Crunch',close:'Close Out'};
+var currentMode='manager';
+var currentPhase='all';
+
+function fmt(n){return'$'+Math.round(n).toLocaleString();}
+function shiftCost(s){return s.flat||(s.count*s.rate*s.hrs);}
+function dayCost(d){return d.shifts.reduce(function(a,s){return a+shiftCost(s);},0);}
+function totalSeasonCost(){return DAYS.reduce(function(a,d){return a+dayCost(d);},0);}
+function totalSlots(){return DAYS.reduce(function(a,d){return a+d.shifts.reduce(function(b,s){return b+s.slots;},0);},0);}
+
+function loadData(){try{var s=localStorage.getItem('bl26_sched');return s?JSON.parse(s):{};}catch(e){return{};}}
+function loadMeta(){try{var s=localStorage.getItem('bl26_sched_meta');return s?JSON.parse(s):{};}catch(e){return{};}}
+
+function saveNames(){
+  var names={};
+  document.querySelectorAll('.name-input').forEach(function(inp){if(inp.value.trim())names[inp.dataset.key]=inp.value.trim();});
+  var ts=new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+  try{localStorage.setItem('bl26_sched',JSON.stringify(names));localStorage.setItem('bl26_sched_meta',JSON.stringify({ts:ts}));}catch(e){}
+  document.getElementById('last-updated').textContent=ts;
+  updateStats();
+  alert('Schedule saved — '+Object.keys(names).length+' names assigned.\n\nStaff can now see the updated schedule by switching to Staff View.');
+}
+
+function setMode(mode){
+  currentMode=mode;
+  document.getElementById('mgr-btn').classList.toggle('active',mode==='manager');
+  document.getElementById('staff-btn').classList.toggle('active',mode==='staff');
+  document.getElementById('save-btn').style.display=mode==='manager'?'':'none';
+  document.getElementById('staff-banner').classList.toggle('show',mode==='staff');
+  render();
+}
+
+function filterPhase(phase,btn){
+  currentPhase=phase;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  render();
+}
+
+function toggleDay(id){var b=document.querySelector('.day-block[data-id="'+id+'"]');if(b)b.classList.toggle('collapsed');}
+function expandAll(){document.querySelectorAll('.day-block').forEach(function(b){b.classList.remove('collapsed');});}
+function collapseAll(){document.querySelectorAll('.day-block').forEach(function(b){b.classList.add('collapsed');});}
+
+function updateStats(){
+  var total=totalSlots();
+  var filled=document.querySelectorAll('.name-input.filled').length;
+  if(currentMode==='staff')filled=Object.keys(loadData()).length;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-filled').textContent=filled;
+  document.getElementById('stat-needed').textContent=Math.max(0,total-filled);
+  document.getElementById('stat-labor').textContent=fmt(totalSeasonCost());
+}
+
+function render(){
+  var saved=loadData();
+  var meta=loadMeta();
+  if(meta.ts)document.getElementById('last-updated').textContent=meta.ts;
+  var el=document.getElementById('schedule');
+  el.innerHTML='';
+  DAYS.forEach(function(day){
+    if(currentPhase!=='all'&&day.phase!==currentPhase)return;
+    var cost=dayCost(day);
+    var peakPeople=day.shifts.filter(function(s){return!s.pos.includes('Security');}).reduce(function(a,s){return a+s.count;},0);
+    var block=document.createElement('div');
+    block.className='day-block';
+    block.dataset.id=day.id;
+    var rows='';
+    day.shifts.forEach(function(s,si){
+      var slotCost=shiftCost(s);
+      if(currentMode==='manager'){
+        var inputs='';
+        if(s.slots===1){
+          var key=day.id+'-'+si+'-0';
+          var val=saved[key]||'';
+          inputs='<input class="name-input'+(val?' filled':'')+'" data-key="'+key+'" placeholder="Assign name" value="'+val+'" oninput="onInput(this)">';
+        }else{
+          var inner='';
+          for(var i=0;i<s.slots;i++){
+            var k=day.id+'-'+si+'-'+i;
+            var v=saved[k]||'';
+            inner+='<input class="name-input'+(v?' filled':'')+'" data-key="'+k+'" placeholder="'+s.pos+' '+(i+1)+'" value="'+v+'" oninput="onInput(this)">';
+          }
+          inputs='<div class="slots-wrap">'+inner+'</div>';
+        }
+        rows+='<tr><td class="time-cell">'+s.time+'</td><td><span class="pos '+s.cls+'">'+(s.count>1?s.count+'x ':'')+s.pos+'</span></td><td>'+inputs+'</td><td class="cost-cell">'+(s.flat?fmt(s.flat):fmt(slotCost))+'</td><td class="note-cell">'+(s.note||'')+'</td></tr>';
+      }else{
+        var nameDisp='';
+        if(s.slots===1){
+          var k2=day.id+'-'+si+'-0';
+          var v2=saved[k2]||'';
+          nameDisp=v2?'<span class="name-display">'+v2+'</span>':'<span class="name-display empty">TBA</span>';
+        }else{
+          var items='';
+          for(var j=0;j<s.slots;j++){
+            var k3=day.id+'-'+si+'-'+j;
+            var v3=saved[k3]||'';
+            items+=v3?'<span class="name-display">'+v3+'</span>':'<span class="name-display empty">TBA</span>';
+          }
+          nameDisp='<div class="names-list">'+items+'</div>';
+        }
+        rows+='<tr><td class="time-cell">'+s.time+'</td><td><span class="pos '+s.cls+'">'+(s.count>1?s.count+'x ':'')+s.pos+'</span></td><td>'+nameDisp+'</td><td class="note-cell">'+(s.note||'')+'</td></tr>';
+      }
+    });
+    if(day.note)rows+='<tr class="note-row"><td colspan="5">'+day.note+'</td></tr>';
+    var mgrCols='<th style="width:140px">Time</th><th style="width:150px">Position</th><th>Assigned to</th><th style="width:75px">Cost</th><th>Notes</th>';
+    var staffCols='<th style="width:140px">Time</th><th style="width:150px">Position</th><th>Who\'s working</th><th>Notes</th>';
+    block.innerHTML='<div class="day-header" onclick="toggleDay(\''+day.id+'\')"><div><div class="day-date">'+day.date+'</div><div class="day-meta">'+day.label+' &middot; '+peakPeople+' peak staff</div></div><div class="day-right"><span class="phase-badge ph-'+day.phase+'">'+PHASE_LABELS[day.phase]+'</span>'+(currentMode==='manager'?'<span class="day-cost">'+fmt(cost)+'</span>':'')+'<span class="chevron">&#9660;</span></div></div><div class="shifts-wrap"><table class="shifts-table"><thead><tr>'+(currentMode==='manager'?mgrCols:staffCols)+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+    el.appendChild(block);
+  });
+  updateStats();
+}
+
+function onInput(inp){inp.classList.toggle('filled',inp.value.trim().length>0);updateStats();}
+render();
+</script>
+</body>
+</html>
